@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roma Minimalista: 19 - 21 Junio</title>
+    <style>
+        /* Paleta estricta de 4 colores */
+        :root {
+            --white: #ffffff;
+            --black: #000000;
+            --grey-light: #f7f7f7;
+            --grey-dark: #777777;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--white);
+            color: var(--black);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 0 0 10px 0;
+        }
+
+        .subtitle {
+            color: var(--grey-dark);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .alert {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            text-align: center;
+            padding: 15px 0;
+            border-top: 1px solid var(--black);
+            border-bottom: 1px solid var(--black);
+            margin-bottom: 40px;
+        }
+
+        /* Sección de Detalles Básicos */
+        .essentials {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        .essential-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--grey-light);
+        }
+
+        .essential-item h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .essential-item p {
+            margin: 0;
+            color: var(--grey-dark);
+            font-size: 0.9rem;
+        }
+
+        .options-container {
+            width: 100%;
+        }
+
+        .sub-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px dashed #eaeaea;
+        }
+
+        .sub-option:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        a {
+            color: var(--black);
+            text-decoration: none;
+            border-bottom: 1px solid var(--black);
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+            margin-left: 15px;
+        }
+
+        a:hover {
+            color: var(--grey-dark);
+            border-color: var(--grey-dark);
+        }
+
+        /* Acordeón del Itinerario */
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            letter-spacing: -0.5px;
+        }
+
+        .accordion {
+            background-color: transparent;
+            color: var(--black);
+            cursor: pointer;
+            padding: 20px 0;
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid var(--black);
+            text-align: left;
+            outline: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion:hover {
+            color: var(--grey-dark);
+        }
+
+        .accordion::after {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+
+        .active::after {
+            content: '−';
+        }
+
+        .panel {
+            background-color: var(--white);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .panel-content {
+            padding: 20px 0 40px 0;
+        }
+
+        .event {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .time {
+            flex: 0 0 60px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--grey-dark);
+            padding-top: 3px;
+        }
+
+        .details {
+            flex: 1;
+        }
+
+        .details p {
+            margin: 0 0 5px 0;
+        }
+
+        .details span.note {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--grey-dark);
+        }
+
+        /* --- PANEL DE PRESUPUESTO --- */
+        .budget-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--black);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s;
+            z-index: 1000;
+        }
+
+        .budget-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .budget-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .budget-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .budget-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 100%;
+            max-width: 350px;
+            height: 100%;
+            background-color: var(--white);
+            box-shadow: -2px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1002;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .budget-panel.active {
+            right: 0;
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--black);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .budget-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--black);
+            line-height: 1;
+        }
+
+        .budget-item {
+            margin-bottom: 15px;
+            border-bottom: 1px dashed var(--grey-light);
+            padding-bottom: 10px;
+        }
+
+        .budget-item:last-of-type {
+            border-bottom: none;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .item-desc {
+            font-size: 0.85rem;
+            color: var(--grey-dark);
+            margin: 0;
+        }
+
+        .budget-total {
+            margin-top: 30px;
+            border-top: 2px solid var(--black);
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        /* --- TARJETA DE VUELOS --- */
+        .flight-card {
+            border: 2px solid var(--black);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .flight-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--grey-light);
+            padding-bottom: 15px;
+        }
+
+        .flight-card-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .flight-route {
+            margin-bottom: 25px;
+        }
+
+        .flight-route:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .flight-direction {
+            font-size: 0.9rem;
+            color: var(--black);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .airline-tag {
+            background: var(--grey-light);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .flight-times {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+        }
+
+        .time-block {
+            width: 80px;
+        }
+
+        .time-block span:first-child {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .time-block span:last-child {
+            font-size: 1rem;
+            color: var(--grey-dark);
+            font-weight: 600;
+        }
+
+        .flight-duration {
+            flex: 1;
+            margin: 0 20px;
+            color: var(--grey-dark);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .flight-duration hr {
+            border: none;
+            border-top: 1px dashed var(--grey-dark);
+            margin: 8px 0;
+        }
+
+        .flight-alerts {
+            background-color: var(--grey-light);
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-top: 25px;
+            border-left: 4px solid var(--black);
+        }
+
+        .flight-alerts p {
+            margin: 0 0 10px 0;
+        }
+
+        .flight-alerts p:last-child {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <p class="subtitle">Escapada de fin de semana</p>
+            <h1>Roma</h1>
+            <p class="subtitle">19 — 21 Junio</p>
+        </header>
+
+        <div class="alert">
+            Importante: Reservar entradas a Coliseo y Vaticano con antelación en sus webs oficiales.
+        </div>
+
+        <section class="essentials">
+            <div class="flight-card">
+                <div class="flight-card-header">
+                    <h3>✈️ Detalles de Vuelos</h3>
+                    <a href="https://www.skyscanner.es/transporte/vuelos/bcn/rome/260619/260621/"
+                        target="_blank">Skyscanner</a>
+                </div>
+
+                <div class="flight-route">
+                    <div class="flight-direction">
+                        <strong>IDA — Viernes, 19 jun. 2026</strong>
+                        <span class="airline-tag">Ryanair (FR6985)</span>
+                    </div>
+                    <div class="flight-times">
+                        <div class="time-block">
+                            <span>18:00</span>
+                            <span>BCN</span>
+                        </div>
+                        <div class="flight-duration">
+                            <span>1 h 55 min</span>
+                            <hr>
+                            <span>Directo</span>
+                        </div>
+                        <div class="time-block">
+                            <span>19:55</span>
+                            <span>FCO</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flight-route">
+                    <div class="flight-direction">
+                        <strong>VUELTA — Domingo, 21 jun. 2026</strong>
+                        <span class="airline-tag">Vueling (VY6111)</span>
+                    </div>
+                    <div class="flight-times">
+                        <div class="time-block">
+                            <span>20:45</span>
+                            <span>FCO</span>
+                        </div>
+                        <div class="flight-duration">
+                            <span>2 h</span>
+                            <hr>
+                            <span>Directo</span>
+                        </div>
+                        <div class="time-block">
+                            <span>22:45</span>
+                            <span>BCN</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flight-alerts">
+                    <p><strong>📱 Check-in online:</strong> ¡Es obligatorio! Descarga las apps de Ryanair y Vueling.
+                        Debes llevar la tarjeta de embarque en el móvil para evitar que te cobren en el mostrador.</p>
+                    <p><strong>⏱️ Cuándo llegar al aeropuerto:</strong> Al viajar solo con mochila (sin facturar) y con
+                        las tarjetas de embarque ya en el móvil, ir directamente al control de seguridad. Llegar
+                        <strong>1h y 30min antes</strong> de la salida del vuelo es el tiempo ideal para ir tranquilos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="essential-item">
+                <div class="options-container">
+                    <h3>Alojamiento (2 Opciones en Termini)</h3>
+
+                    <div class="sub-option">
+                        <div>
+                            <p><strong>Opción 1: Hotel Floridia *** (263 €)</strong></p>
+                            <p>Habitación Doble Económica. Ventaja: Recepción 24h para equipaje.</p>
+                        </div>
+                        <a href="https://www.booking.com/hotel/it/floridia.es.html" target="_blank">Booking</a>
+                    </div>
+
+                    <div class="sub-option">
+                        <div>
+                            <p><strong>Opción 2: Angolo Sereno (271 €)</strong></p>
+                            <p>Habitación estándar (oferta -33%). B&B moderno y reformado.</p>
+                        </div>
+                        <a href="https://www.booking.com/hotel/it/angolo-sereno-roma1.es.html"
+                            target="_blank">Booking</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="essential-item">
+                <div class="options-container">
+                    <h3>Transporte Aeropuerto FCO - Termini</h3>
+
+                    <div class="sub-option" style="align-items: flex-start;">
+                        <div>
+                            <p><strong>Opción 1: Tren Leonardo Express (Recomendado)</strong></p>
+                            <p style="margin-bottom: 10px;">56 € total (Ida y Vuelta para 2 personas) — 32 min sin
+                                paradas.</p>
+                            <ul
+                                style="margin: 0; padding-left: 18px; font-size: 0.85rem; color: var(--grey-dark); line-height: 1.6;">
+                                <li style="margin-bottom: 4px;"><strong>Frecuencia:</strong> Salidas cada 15 minutos
+                                    exactos.</li>
+                                <li style="margin-bottom: 4px;"><strong>Ubicación en Termini:</strong> Suele operar en
+                                    las <strong>vías 23 o 24</strong>. Id con 10 minutos de margen porque están al fondo
+                                    a la derecha de la estación y hay que caminar un poco por el andén.</li>
+                                <li><strong>Aviso clave:</strong> Si compráis el billete online (lleva QR) no hay que
+                                    hacer nada. Si lo compráis allí en las máquinas físicas, <strong>debéis validarlo
+                                        ("picarlo")</strong> en las maquinitas del andén antes de subir al tren para
+                                    evitar multas.</li>
+                            </ul>
+                        </div>
+                        <a href="https://www.trenitalia.com/es.html" target="_blank"
+                            style="margin-top: 5px;">Trenitalia</a>
+                    </div>
+
+                    <div class="sub-option">
+                        <div>
+                            <p><strong>Opción 2: Bus Terravision</strong></p>
+                            <p>~24 € total (I/V 2 pax). 55 minutos. Puede sufrir atascos.</p>
+                        </div>
+                        <a href="https://www.terravision.eu/es/" target="_blank">Terravision</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="essential-item">
+            <div class="options-container">
+                <h3>Transporte Urbano (Roma)</h3>
+
+                <div class="sub-option" style="border-bottom: none; padding-bottom: 0;">
+                    <div>
+                        <p><strong>Billete MetroBus 24 horas (7 €)</strong></p>
+                        <p style="font-size: 0.85rem; color: var(--grey-dark); margin-top: 5px; line-height: 1.5;">Uso
+                            ilimitado de metro, autobús y tranvía durante 24 horas desde la primera vez que se pica.
+                            Necesitaréis 2 billetes por persona (uno para el sábado y otro para el domingo).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Itinerario Tranquilo & Especial</h2>
+
+        <button class="accordion">Día 01 — Viernes, 19 Junio</button>
+        <div class="panel">
+            <div class="panel-content">
+                <div class="event">
+                    <div class="time">19:55</div>
+                    <div class="details">
+                        <p><strong>Llegada a Fiumicino (FCO).</strong></p>
+                        <span class="note">Ir directos a la estación para tomar el Leonardo Express.</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">21:10</div>
+                    <div class="details">
+                        <p><strong>Check-in en el alojamiento.</strong></p>
+                        <span class="note">Llegada a Termini y dejar el equipaje.</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">21:45</div>
+                    <div class="details">
+                        <p><strong>Cena local.</strong></p>
+                        <span class="note">Trattoria Dell'OMO, para coger fuerzas.</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">23:00</div>
+                    <div class="details">
+                        <p><strong>🌟 La Primera Sorpresa: Trevi en silencio.</strong></p>
+                        <span class="note">Coger la línea A de metro hasta Barberini. Llévala paseando sin decirle a
+                            dónde vais hasta que escuchéis el agua. Ver la <a
+                                href="https://www.google.com/maps/search/?api=1&query=Fontana+di+Trevi"
+                                target="_blank">Fontana di Trevi</a> casi vacía e iluminada a medianoche es magia
+                            pura.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="accordion">Día 02 — Sábado, 20 Junio</button>
+        <div class="panel">
+            <div class="panel-content">
+                <div class="event">
+                    <div class="time">09:30</div>
+                    <div class="details">
+                        <p><strong>El Vaticano.</strong></p>
+                        <span class="note">Metro Línea A hasta Ottaviano. Visita a la Plaza de San Pedro y la
+                            Basílica.</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">12:30</div>
+                    <div class="details">
+                        <p><strong>Castillo de Sant'Angelo.</strong></p>
+                        <span class="note">Paseo por Via della Conciliazione y cruce del puente de los ángeles.</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">13:30</div>
+                    <div class="details">
+                        <p><strong>Comida en el centro.</strong></p>
+                        <span class="note">Zona Piazza Navona. (Ej: Cantina e Cucina).</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">15:30</div>
+                    <div class="details">
+                        <p><strong>🌟 El Momento "Dolce Vita".</strong></p>
+                        <span class="note">Paseo por Piazza Navona y el Panteón. Parada obligatoria para un helado
+                            inolvidable en <a href="https://www.google.com/maps/search/?api=1&query=Frigidarium+Roma"
+                                target="_blank">Frigidarium</a> o <a
+                                href="https://www.google.com/maps/search/?api=1&query=Giolitti+Roma"
+                                target="_blank">Giolitti</a>, y comedlo sentados frente a las fuentes.</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">19:00</div>
+                    <div class="details">
+                        <p><strong>🌟 El Atardecer Secreto.</strong></p>
+                        <span class="note">Desviaos a la colina del Aventino. Primero las vistas románticas en el <a
+                                href="https://www.google.com/maps/search/?api=1&query=Giardino+degli+Aranci"
+                                target="_blank">Jardín de los Naranjos</a> y justo después que mire por <a
+                                href="https://www.google.com/maps/search/?api=1&query=Il+Buco+della+Serratura"
+                                target="_blank">La Cerradura de Malta</a>. ¡Alucinará!</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">20:30</div>
+                    <div class="details">
+                        <p><strong>Cena en Trastevere.</strong></p>
+                        <span class="note">Cruzar el río y disfrutar del ambientazo del barrio. (Ej: Carlo Menta o
+                            Tonnarello).</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="accordion">Día 03 — Domingo, 21 Junio</button>
+        <div class="panel">
+            <div class="panel-content">
+                <div class="event">
+                    <div class="time">09:00</div>
+                    <div class="details">
+                        <p><strong>Check-out.</strong></p>
+                        <span class="note">Dejar equipaje en la recepción (Floridia) o en consigna de Termini (Angolo
+                            Sereno).</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">10:00</div>
+                    <div class="details">
+                        <p><strong>Roma Imperial.</strong></p>
+                        <span class="note">Coliseo, Foro Romano y Palatino. <a href="https://ticketing.colosseo.it/es/"
+                                target="_blank">Tickets web oficial</a>.</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">13:30</div>
+                    <div class="details">
+                        <p><strong>Piazza Venezia.</strong></p>
+                        <span class="note">Monumento a Víctor Manuel II.</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">14:15</div>
+                    <div class="details">
+                        <p><strong>Última comida en Barrio Monti.</strong></p>
+                        <span class="note">Paseo por la zona bohemia entre el Coliseo y Termini. ¡Aprovechad el tiempo
+                            extra!</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">17:45</div>
+                    <div class="details">
+                        <p><strong>Recogida de equipaje.</strong></p>
+                        <span class="note">Volver a por las mochilas y caminar hacia la estación de tren de
+                            Termini.</span>
+                    </div>
+                </div>
+                <div class="event">
+                    <div class="time">18:20</div>
+                    <div class="details">
+                        <p><strong>Tren de regreso a FCO.</strong></p>
+                        <span class="note">Tomar el Leonardo Express. Llegaréis al aeropuerto sobre las 18:52h. Vuelo a
+                            las 20:45h.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="budget-btn" onclick="toggleBudget()">💰 Presupuesto</button>
+
+        <div class="budget-overlay" onclick="toggleBudget()"></div>
+
+        <div class="budget-panel">
+            <div class="budget-header">
+                <h2>Gastos (2 Pax)</h2>
+                <button class="close-btn" onclick="toggleBudget()">×</button>
+            </div>
+
+            <div class="budget-item">
+                <div class="item-header"><span>Vuelos</span><span>~160 €</span></div>
+                <p class="item-desc">Ida y vuelta estimado para los dos sin maleta facturada.</p>
+            </div>
+
+            <div class="budget-item">
+                <div class="item-header"><span>Alojamiento</span><span>263 €</span></div>
+                <p class="item-desc">Hotel Floridia (2 noches, Doble Económica).</p>
+            </div>
+
+            <div class="budget-item">
+                <div class="item-header"><span>Transporte FCO</span><span>56 €</span></div>
+                <p class="item-desc">Leonardo Express Ida y Vuelta (14€ x 4 billetes).</p>
+            </div>
+
+            <div class="budget-item">
+                <div class="item-header"><span>Transporte Urbano</span><span>28 €</span></div>
+                <p class="item-desc">4 billetes MetroBus de 24h (2 por persona para sábado y domingo).</p>
+            </div>
+
+            <div class="budget-item">
+                <div class="item-header"><span>Entradas Coliseo</span><span>36 €</span></div>
+                <p class="item-desc">Entrada oficial Coliseo/Foro/Palatino (18€ x 2).</p>
+            </div>
+
+            <div class="budget-item">
+                <div class="item-header"><span>🌟 Momento Dolce Vita</span><span>~10 €</span></div>
+                <p class="item-desc">Un par de buenos helados artesanos en Giolitti o Frigidarium.</p>
+            </div>
+
+            <div class="budget-item">
+                <div class="item-header"><span>Comida y Cenas</span><span>~140 €</span></div>
+                <p class="item-desc">Estimación para pizzerías, trattorias y desayunos.</p>
+            </div>
+
+            <div class="budget-total">
+                <span>TOTAL APROX.</span>
+                <span>~693 €</span>
+            </div>
+        </div>
+
+        <script>
+
+            // Función para abrir/cerrar el panel de presupuesto
+            function toggleBudget() {
+                document.querySelector('.budget-panel').classList.toggle('active');
+                document.querySelector('.budget-overlay').classList.toggle('active');
+            }
+            const accordions = document.querySelectorAll('.accordion');
+
+            // Abrir el panel del Día 1 por defecto
+            accordions[0].classList.add('active');
+            accordions[0].nextElementSibling.style.maxHeight = accordions[0].nextElementSibling.scrollHeight + "px";
+
+            accordions.forEach(acc => {
+                acc.addEventListener('click', function () {
+                    accordions.forEach(otherAcc => {
+                        if (otherAcc !== this && otherAcc.classList.contains('active')) {
+                            otherAcc.classList.remove('active');
+                            otherAcc.nextElementSibling.style.maxHeight = null;
+                        }
+                    });
+
+                    this.classList.toggle('active');
+                    const panel = this.nextElementSibling;
+                    if (panel.style.maxHeight) {
+                        panel.style.maxHeight = null;
+                    } else {
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                    }
+                });
+            });
+        </script>
+</body>
+
+</html>
